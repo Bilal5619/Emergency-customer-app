@@ -1,18 +1,29 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { colors } from '@/constants/colors';
 
-SplashScreen.preventAutoHideAsync();
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.background },
+        }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="booking/service/[serviceId]" />
+        <Stack.Screen name="booking/address" />
+        <Stack.Screen name="booking/urgency" />
+        <Stack.Screen name="booking/summary" />
+        <Stack.Screen name="booking/payment" />
+        <Stack.Screen name="booking/create-account" />
+        <Stack.Screen name="booking/confirmation" />
+        <Stack.Screen name="booking-status/[bookingId]" />
+        <Stack.Screen name="tracking/[bookingId]" />
+      </Stack>
+    </>
   );
 }
