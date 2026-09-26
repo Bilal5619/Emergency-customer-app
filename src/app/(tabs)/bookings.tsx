@@ -14,16 +14,20 @@ export default function BookingsScreen() {
         subtitle="Track current jobs and view past visits."
       />
       <View style={styles.list}>
-        <BookingCard
-          label="Active booking"
-          booking={bookings[0]}
-          onPress={() => router.push("/booking-status/active")}
-        />
-        <BookingCard
-          label="Past booking"
-          booking={bookings[1]}
-          onPress={() => router.push("/booking-status/past")}
-        />
+        {bookings.map((booking) => (
+          <BookingCard
+            key={booking.id}
+            label={
+              booking.status === "completed"
+                ? "Past booking"
+                : booking.status === "cancelled"
+                  ? "Cancelled booking"
+                  : "Active booking"
+            }
+            booking={booking}
+            onPress={() => router.push(`/booking-status/${booking.id}`)}
+          />
+        ))}
       </View>
     </Screen>
   );
