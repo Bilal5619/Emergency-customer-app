@@ -1,7 +1,3 @@
-import { router, useLocalSearchParams } from "expo-router";
-import { SymbolView } from "expo-symbols";
-import { StyleSheet, Text, View } from "react-native";
-
 import { AddressCard } from "@/components/AddressCard";
 import { AppHeader } from "@/components/AppHeader";
 import { PriceBreakdown } from "@/components/PriceBreakdown";
@@ -15,17 +11,21 @@ import {
   savedAddress,
 } from "@/constants/mockData";
 import { typography } from "@/constants/typography";
+import { useBooking } from "@/context/BookingContext";
+import { router } from "expo-router";
+import { SymbolView } from "expo-symbols";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function SummaryScreen() {
-  const params = useLocalSearchParams<{
-    serviceId: string;
-    issueId: string;
-    urgencyId: string;
-  }>();
+  const { draft } = useBooking();
 
-  const service = getService(params.serviceId);
-  const problem = getProblem(params.serviceId, params.issueId);
-  const urgency = getUrgency(params.urgencyId);
+  const service = getService(draft.serviceId);
+
+  const problem = getProblem(draft.serviceId, draft.issueId);
+
+  const urgency = getUrgency(draft.urgencyId);
+
+  const address = draft.address ?? savedAddress;
 
   return (
     <Screen>
@@ -64,7 +64,7 @@ export default function SummaryScreen() {
         </View>
       </View>
 
-      <AddressCard address={savedAddress} />
+      <AddressCard address={address} />
 
       <PriceBreakdown />
 
@@ -84,14 +84,7 @@ export default function SummaryScreen() {
         </Text>
       </View>
 
-      <PrimaryButton
-        onPress={() =>
-          router.push({
-            pathname: "/booking/payment",
-            params,
-          })
-        }
-      >
+      <PrimaryButton onPress={() => router.push("/booking/payment")}>
         Continue to payment
       </PrimaryButton>
     </Screen>

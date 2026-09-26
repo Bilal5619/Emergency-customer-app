@@ -4,9 +4,10 @@ import { StyleSheet, View } from "react-native";
 import { AppHeader } from "@/components/AppHeader";
 import { BookingCard } from "@/components/BookingCard";
 import { Screen } from "@/components/Screen";
-import { bookings } from "@/constants/mockData";
+import { useBooking } from "@/context/BookingContext";
 
 export default function BookingsScreen() {
+  const { bookings } = useBooking();
   return (
     <Screen>
       <AppHeader

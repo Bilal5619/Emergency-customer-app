@@ -7,8 +7,10 @@ import { EngineerCard } from "@/components/EngineerCard";
 import { Screen } from "@/components/Screen";
 import { SecondaryButton } from "@/components/SecondaryButton";
 import { colors, shadows } from "@/constants/colors";
-import { bookings, formatCurrency } from "@/constants/mockData";
+import { formatCurrency } from "@/constants/mockData";
+
 import { typography } from "@/constants/typography";
+import { useBooking } from "@/context/BookingContext";
 import type { Booking, BookingStatus } from "@/types/booking";
 
 const timeline: {
@@ -60,7 +62,9 @@ const statusIndex: Partial<Record<BookingStatus, number>> = {
 export default function BookingStatusScreen() {
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
 
-  const booking = bookings.find((item) => item.id === bookingId) ?? bookings[0];
+  const { bookings, getBookingById } = useBooking();
+
+  const booking = getBookingById(bookingId) ?? bookings[0];
 
   const isCompleted = booking.status === "completed";
   const isCancelled = booking.status === "cancelled";

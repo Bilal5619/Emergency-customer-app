@@ -1,6 +1,9 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
+
+import { useBooking } from "@/context/BookingContext";
+import { useState } from "react";
 
 import { AddressCard } from "@/components/AddressCard";
 import { AppHeader } from "@/components/AppHeader";
@@ -13,17 +16,50 @@ import { savedAddress } from "@/constants/mockData";
 import { typography } from "@/constants/typography";
 
 export default function AddressScreen() {
-  const params = useLocalSearchParams<{
-    serviceId: string;
-    issueId: string;
-    urgencyId: string;
-  }>();
+  const { draft, setAddress } = useBooking();
 
-  const next = () =>
-    router.push({
-      pathname: "/booking/summary",
-      params,
+  const [postcode, setPostcode] = useState(draft.address?.postcode ?? "");
+
+  const [line1, setLine1] = useState(draft.address?.line1 ?? "");
+
+  const [line2, setLine2] = useState(draft.address?.line2 ?? "");
+
+  const [city, setCity] = useState(draft.address?.city ?? "");
+
+  const [notes, setNotes] = useState(draft.address?.notes ?? "");
+
+  const useSavedAddress = () => {
+    setAddress(savedAddress);
+
+    router.push("/booking/summary");
+  };
+
+  const useNewAddress = () => {
+    if (!postcode.trim() || !line1.trim() || !city.trim()) {
+      Alert.alert(
+        "Address required",
+        "Please enter your postcode, address and town/city.",
+      );
+
+      return;
+    }
+
+    setAddress({
+      id: `manual-${Date.now()}`,
+
+      line1: line1.trim(),
+
+      line2: line2.trim() || undefined,
+
+      city: city.trim(),
+
+      postcode: postcode.trim().toUpperCase(),
+
+      notes: notes.trim() || undefined,
     });
+
+    router.push("/booking/summary");
+  };
 
   return (
     <Screen>
@@ -45,11 +81,15 @@ export default function AddressScreen() {
 
         <AddressCard address={savedAddress} />
 
-        <PrimaryButton onPress={next}>Use this address</PrimaryButton>
+        <PrimaryButton onPress={useSavedAddress}>
+          Use this address
+        </PrimaryButton>
 
         <View style={styles.dividerRow}>
           <View style={styles.divider} />
+
           <Text style={styles.dividerText}>OR</Text>
+
           <View style={styles.divider} />
         </View>
 
@@ -79,32 +119,45 @@ export default function AddressScreen() {
           <View style={styles.form}>
             <FormField
               label="Postcode"
-              placeholder="M21 4AB"
+              placeholder="G1 1AA"
               autoCapitalize="characters"
+              value={postcode}
+              onChangeText={setPostcode}
             />
 
             <FormField
               label="Address line 1"
               placeholder="House number and street"
+              value={line1}
+              onChangeText={setLine1}
             />
 
             <FormField
               label="Address line 2 (optional)"
               placeholder="Flat, building or floor"
+              value={line2}
+              onChangeText={setLine2}
             />
 
-            <FormField label="Town / City" placeholder="Manchester" />
+            <FormField
+              label="Town / City"
+              placeholder="Glasgow"
+              value={city}
+              onChangeText={setCity}
+            />
 
             <FormField
               label="Access notes (optional)"
               placeholder="Anything the engineer should know"
               multiline
+              value={notes}
+              onChangeText={setNotes}
               style={styles.notesInput}
             />
           </View>
         </View>
 
-        <SecondaryButton onPress={next}>
+        <SecondaryButton onPress={useNewAddress}>
           Continue with this address
         </SecondaryButton>
       </View>

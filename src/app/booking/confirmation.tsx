@@ -8,26 +8,37 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { Screen } from "@/components/Screen";
 import { StatusBadge } from "@/components/StatusBadge";
 import { colors, shadows } from "@/constants/colors";
-import {
-  formatCurrency,
-  getProblem,
-  getService,
-  getUrgency,
-  mockTotal,
-  savedAddress,
-} from "@/constants/mockData";
+import { formatCurrency } from "@/constants/mockData";
+
 import { typography } from "@/constants/typography";
+import { useBooking } from "@/context/BookingContext";
 
 export default function ConfirmationScreen() {
-  const params = useLocalSearchParams<{
-    serviceId: string;
-    issueId: string;
-    urgencyId: string;
+  const { bookingId } = useLocalSearchParams<{
+    bookingId: string;
   }>();
 
-  const service = getService(params.serviceId);
-  const problem = getProblem(params.serviceId, params.issueId);
-  const urgency = getUrgency(params.urgencyId);
+  const { getBookingById, lastCreatedBookingId, resetDraft } = useBooking();
+
+  const booking =
+    getBookingById(bookingId) ?? getBookingById(lastCreatedBookingId);
+
+  if (!booking) {
+    return (
+      <Screen>
+        <AppHeader
+          title="Booking"
+          subtitle="Booking details are unavailable."
+        />
+      </Screen>
+    );
+  }
+
+  const trackBooking = () => {
+    resetDraft();
+
+    router.replace(`/booking-status/${booking.id}`);
+  };
 
   return (
     <Screen>
@@ -53,8 +64,7 @@ export default function ConfirmationScreen() {
 
         <Text style={styles.successTitle}>You're booked</Text>
 
-        <Text style={styles.reference}>Reference EA-10452</Text>
-
+        <Text style={styles.reference}>Reference {booking.reference}</Text>
         <StatusBadge status="finding_engineer" />
 
         <Text style={styles.message}>
@@ -65,24 +75,22 @@ export default function ConfirmationScreen() {
       <View style={styles.card}>
         <Text style={styles.heading}>Booking details</Text>
 
-        <SummaryRow label="Service" value={service.name} />
+        <SummaryRow label="Service" value={booking.service} />
 
-        <SummaryRow label="Issue" value={problem.title} />
+        <SummaryRow label="Issue" value={booking.issue} />
 
-        <SummaryRow label="Response" value={urgency.title} />
+        <SummaryRow label="Response" value={booking.urgency} />
 
         <SummaryRow
           label="Amount paid"
-          value={formatCurrency(mockTotal)}
+          value={formatCurrency(booking.total)}
           last
         />
       </View>
 
-      <AddressCard address={savedAddress} />
+      <AddressCard address={booking.address} />
 
-      <PrimaryButton onPress={() => router.push("/booking-status/searching")}>
-        Track my booking
-      </PrimaryButton>
+      <PrimaryButton onPress={trackBooking}>Track my booking</PrimaryButton>
     </Screen>
   );
 }

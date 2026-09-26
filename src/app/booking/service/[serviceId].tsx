@@ -1,18 +1,18 @@
-import { router, useLocalSearchParams } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
-
 import { AppHeader } from "@/components/AppHeader";
 import { ProblemRow } from "@/components/ProblemRow";
 import { Screen } from "@/components/Screen";
 import { colors } from "@/constants/colors";
 import { getService } from "@/constants/mockData";
 import { typography } from "@/constants/typography";
+import { useBooking } from "@/context/BookingContext";
+import { router, useLocalSearchParams } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function ServiceIssueScreen() {
   const { serviceId } = useLocalSearchParams<{ serviceId: string }>();
 
   const service = getService(serviceId);
-
+  const { startBooking } = useBooking();
   return (
     <Screen>
       <AppHeader title={service.name} subtitle="Tell us what is happening." />
@@ -34,15 +34,11 @@ export default function ServiceIssueScreen() {
             <ProblemRow
               key={problem.id}
               problem={problem}
-              onPress={() =>
-                router.push({
-                  pathname: "/booking/address",
-                  params: {
-                    serviceId: service.id,
-                    issueId: problem.id,
-                  },
-                })
-              }
+              onPress={() => {
+                startBooking(service.id, problem.id);
+
+                router.push("/booking/urgency");
+              }}
             />
           ))}
         </View>

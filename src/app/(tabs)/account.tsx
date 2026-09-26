@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -97,9 +98,13 @@ function GuestState() {
         </Text>
 
         <View style={styles.actions}>
-          <PrimaryButton>Create account</PrimaryButton>
+          <PrimaryButton onPress={() => router.push("/auth/create-account")}>
+            Create account
+          </PrimaryButton>
 
-          <SecondaryButton>Sign in</SecondaryButton>
+          <SecondaryButton onPress={() => router.push("/auth/sign-in")}>
+            Sign in
+          </SecondaryButton>
         </View>
       </View>
 

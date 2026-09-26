@@ -11,16 +11,17 @@ import { colors, shadows } from "@/constants/colors";
 import { typography } from "@/constants/typography";
 
 export default function CreateAccountScreen() {
-  const params = useLocalSearchParams<{
-    serviceId: string;
-    issueId: string;
-    urgencyId: string;
+  const { bookingId } = useLocalSearchParams<{
+    bookingId: string;
   }>();
 
   const continueToConfirmation = () =>
     router.push({
       pathname: "/booking/confirmation",
-      params,
+
+      params: {
+        bookingId,
+      },
     });
 
   return (

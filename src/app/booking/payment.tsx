@@ -1,6 +1,8 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
+
+import { useBooking } from "@/context/BookingContext";
 
 import { AppHeader } from "@/components/AppHeader";
 import { FormField } from "@/components/FormField";
@@ -12,11 +14,28 @@ import { colors, shadows } from "@/constants/colors";
 import { typography } from "@/constants/typography";
 
 export default function PaymentScreen() {
-  const params = useLocalSearchParams<{
-    serviceId: string;
-    issueId: string;
-    urgencyId: string;
-  }>();
+  const { createBooking } = useBooking();
+
+  const handlePayment = () => {
+    const booking = createBooking();
+
+    if (!booking) {
+      Alert.alert(
+        "Booking incomplete",
+        "Some booking information is missing. Please restart the booking.",
+      );
+
+      return;
+    }
+
+    router.push({
+      pathname: "/booking/create-account",
+
+      params: {
+        bookingId: booking.id,
+      },
+    });
+  };
 
   return (
     <Screen>
@@ -97,16 +116,7 @@ export default function PaymentScreen() {
         </View>
       </View>
 
-      <PrimaryButton
-        onPress={() =>
-          router.push({
-            pathname: "/booking/create-account",
-            params,
-          })
-        }
-      >
-        Pay now
-      </PrimaryButton>
+      <PrimaryButton onPress={handlePayment}>Pay now</PrimaryButton>
     </Screen>
   );
 }

@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -7,12 +7,9 @@ import { Screen } from "@/components/Screen";
 import { colors, shadows } from "@/constants/colors";
 import { urgencyOptions } from "@/constants/mockData";
 import { typography } from "@/constants/typography";
-
+import { useBooking } from "@/context/BookingContext";
 export default function UrgencyScreen() {
-  const params = useLocalSearchParams<{
-    serviceId: string;
-    issueId: string;
-  }>();
+  const { setUrgency } = useBooking();
 
   return (
     <Screen>
@@ -37,15 +34,11 @@ export default function UrgencyScreen() {
             <Pressable
               key={urgency.id}
               accessibilityRole="button"
-              onPress={() =>
-                router.push({
-                  pathname: "/booking/address",
-                  params: {
-                    ...params,
-                    urgencyId: urgency.id,
-                  },
-                })
-              }
+              onPress={() => {
+                setUrgency(urgency.id);
+
+                router.push("/booking/address");
+              }}
               style={({ pressed }) => [
                 styles.option,
                 pressed && styles.pressed,
