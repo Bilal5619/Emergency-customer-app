@@ -1,8 +1,8 @@
-import { useEffect, useState, type PropsWithChildren } from 'react';
-import { Animated, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState, type PropsWithChildren } from "react";
+import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { colors } from '@/constants/colors';
+import { colors } from "@/constants/colors";
 
 type Props = PropsWithChildren<{
   scroll?: boolean;
@@ -27,19 +27,26 @@ export function Screen({ children, scroll = true }: Props) {
           opacity: entrance,
           transform: [
             {
-              translateY: entrance.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }),
+              translateY: entrance.interpolate({
+                inputRange: [0, 1],
+                outputRange: [8, 0],
+              }),
             },
           ],
         },
-      ]}>
+      ]}
+    >
       <View style={styles.content}>{children}</View>
     </Animated.View>
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       {scroll ? (
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
           {content}
         </ScrollView>
       ) : (
@@ -62,11 +69,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   content: {
-    width: '100%',
+    width: "100%",
     maxWidth: 760,
-    alignSelf: 'center',
-    paddingHorizontal: 18,
-    paddingTop: 18,
+    alignSelf: "center",
+    paddingHorizontal: 16,
+    paddingTop: 10,
     paddingBottom: 28,
     gap: 16,
   },

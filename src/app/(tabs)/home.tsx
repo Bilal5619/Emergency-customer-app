@@ -1,10 +1,10 @@
-import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { router } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
-import { HomeHeader } from '@/components/HomeHeader';
-import { Screen } from '@/components/Screen';
-import { ServiceRow } from '@/components/ServiceRow';
-import { services } from '@/constants/mockData';
+import { HomeHeader } from "@/components/HomeHeader";
+import { Screen } from "@/components/Screen";
+import { ServiceRow } from "@/components/ServiceRow";
+import { services } from "@/constants/mockData";
 
 export default function HomeScreen() {
   return (
@@ -15,7 +15,12 @@ export default function HomeScreen() {
           <ServiceRow
             key={service.id}
             service={service}
-            onPress={() => router.push({ pathname: '/booking/service/[serviceId]', params: { serviceId: service.id } })}
+            onPress={() =>
+              router.push({
+                pathname: "/booking/service/[serviceId]",
+                params: { serviceId: service.id },
+              })
+            }
           />
         ))}
       </View>
@@ -24,5 +29,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  list: { gap: 14 },
+  list: {
+    gap: 12,
+    marginTop: -2,
+    paddingBottom: 18,
+  },
 });
